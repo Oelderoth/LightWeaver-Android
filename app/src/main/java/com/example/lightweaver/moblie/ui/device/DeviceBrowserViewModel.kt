@@ -1,13 +1,13 @@
-package com.example.lightweaver.moblie.ui.slideshow
+package com.example.lightweaver.moblie.ui.device
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class SlideshowViewModel : ViewModel() {
+class DeviceBrowserViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is slideshow Fragment"
+        value = "This is Device Browser Fragment"
     }
     val text: LiveData<String> = _text
 }

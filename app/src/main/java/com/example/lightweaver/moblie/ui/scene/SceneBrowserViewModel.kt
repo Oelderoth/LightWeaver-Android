@@ -1,13 +1,13 @@
-package com.example.lightweaver.moblie.ui.home
+package com.example.lightweaver.moblie.ui.scene
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class HomeViewModel : ViewModel() {
+class SceneBrowserViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+        value = "This is Scene Browser Fragment"
     }
     val text: LiveData<String> = _text
 }

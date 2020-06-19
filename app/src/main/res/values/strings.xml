@@ -3,6 +3,7 @@
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_misc">Misc Test Item</string>
 
     <string name="menu_devices">Devices</string>
     <string name="menu_device_groups">Device Groups</string>
