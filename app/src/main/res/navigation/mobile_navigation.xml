@@ -3,23 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_devices">
 
     <fragment
-        android:id="@+id/nav_home"
+        android:id="@+id/nav_devices"
         android:name="com.example.lightweaver.moblie.ui.home.HomeFragment"
-        android:label="@string/menu_home"
+        android:label="@string/menu_devices"
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
+        android:id="@+id/nav_device_groups"
         android:name="com.example.lightweaver.moblie.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
+        android:label="@string/menu_device_groups"
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
+        android:id="@+id/nav_palette"
         android:name="com.example.lightweaver.moblie.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
+        android:label="@string/menu_palette"
         tools:layout="@layout/fragment_slideshow" />
+    <fragment android:id="@+id/nav_settings" />
+    <fragment android:id="@+id/nav_scenes" />
 </navigation>
