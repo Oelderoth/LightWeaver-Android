@@ -29,10 +29,10 @@ class DeviceBrowserFragment : Fragment() {
         val recyclerView = root.findViewById<RecyclerView>(R.id.device_browser_view)
         recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = DeviceBrowserRecyclerViewAdapter(requireContext(), viewModel.deviceConfigurations.value ?: listOf())
+        recyclerView.adapter = DeviceBrowserRecyclerViewAdapter(requireContext(), viewModel.deviceInfo.value ?: listOf())
 
-        viewModel.deviceConfigurations.observe(viewLifecycleOwner, Observer {
-            recyclerView.swapAdapter(DeviceBrowserRecyclerViewAdapter(requireContext(), viewModel.deviceConfigurations.value ?: listOf()), false)
+        viewModel.deviceInfo.observe(viewLifecycleOwner, Observer {
+            recyclerView.swapAdapter(DeviceBrowserRecyclerViewAdapter(requireContext(), viewModel.deviceInfo.value ?: listOf()), false)
         })
 
         setHasOptionsMenu(true)
