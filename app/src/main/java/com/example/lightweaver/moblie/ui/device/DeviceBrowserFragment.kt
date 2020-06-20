@@ -10,15 +10,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lightweaver.moblie.R
+import com.example.lightweaver.moblie.persistence.LightWeaverDatabase
+import com.example.lightweaver.moblie.persistence.entities.HttpDeviceConfiguration
 import com.google.android.material.snackbar.Snackbar
-import com.oelderoth.lightweaver.core.devices.SupportedFeature
-import com.oelderoth.lightweaver.http.devices.HttpDeviceDescriptor
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.random.Random
 
 class DeviceBrowserFragment : Fragment() {
 
@@ -35,21 +32,11 @@ class DeviceBrowserFragment : Fragment() {
 
         val recyclerView = root.findViewById<RecyclerView>(R.id.device_browser_view)
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = DeviceBrowserRecyclerViewAdapter(requireContext(), viewModel.deviceDescriptorList.value ?: listOf())
+        recyclerView.adapter = DeviceBrowserRecyclerViewAdapter(requireContext(), viewModel.deviceConfigurations.value ?: listOf())
 
-        viewModel.deviceDescriptorList.observe(viewLifecycleOwner, Observer {
-            recyclerView.swapAdapter(DeviceBrowserRecyclerViewAdapter(requireContext(), viewModel.deviceDescriptorList.value ?: listOf()), false)
+        viewModel.deviceConfigurations.observe(viewLifecycleOwner, Observer {
+            recyclerView.swapAdapter(DeviceBrowserRecyclerViewAdapter(requireContext(), viewModel.deviceConfigurations.value ?: listOf()), false)
         })
-
-        viewModel.addDeviceDescriptor(HttpDeviceDescriptor("0x00101010A", "Not a real device", "0.0.1", listOf(SupportedFeature.ADDRESSABLE, SupportedFeature.ANIMATION, SupportedFeature.BRIGHTNESS, SupportedFeature.COLOR), "0.1", "http://192.168.0.145:80/"))
-        viewModel.addDeviceDescriptor(HttpDeviceDescriptor("0x00101010B", "Dev 2", "0.0.1", listOf(SupportedFeature.ADDRESSABLE, SupportedFeature.ANIMATION, SupportedFeature.BRIGHTNESS, SupportedFeature.COLOR), "0.1", "http://192.168.0.145:80/"))
-
-        viewModel.viewModelScope.launch {
-            delay(2000)
-            viewModel.addDeviceDescriptor(HttpDeviceDescriptor("0x00101010C", "Slow Device", "0.0.1", listOf(SupportedFeature.ADDRESSABLE, SupportedFeature.ANIMATION, SupportedFeature.BRIGHTNESS, SupportedFeature.COLOR), "0.1", "http://192.168.0.145:80/"))
-            delay(10000)
-            viewModel.addDeviceDescriptor(HttpDeviceDescriptor("0x00101010D", "Really Slow Device", "0.0.1", listOf(SupportedFeature.ADDRESSABLE, SupportedFeature.ANIMATION, SupportedFeature.BRIGHTNESS, SupportedFeature.COLOR), "0.1", "http://192.168.0.145:80/"))
-        }
 
         setHasOptionsMenu(true)
         return root

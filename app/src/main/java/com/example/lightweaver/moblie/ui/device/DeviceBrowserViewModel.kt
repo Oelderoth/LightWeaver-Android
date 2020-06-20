@@ -1,29 +1,31 @@
 package com.example.lightweaver.moblie.ui.device
 
-import android.util.Log
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.lightweaver.moblie.notifyObserver
+import com.example.lightweaver.moblie.persistence.LightWeaverDatabase
+import com.example.lightweaver.moblie.persistence.entities.DeviceConfiguration
 import com.oelderoth.lightweaver.core.devices.DeviceDescriptor
-import com.oelderoth.lightweaver.core.devices.SupportedFeature
-import com.oelderoth.lightweaver.http.devices.HttpDeviceDescriptor
 
-class DeviceBrowserViewModel : ViewModel() {
+class DeviceBrowserViewModel(application: Application) : AndroidViewModel(application) {
+    val deviceConfigurations: LiveData<List<DeviceConfiguration>>
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is Device Browser Fragment"
+    init {
+        val repository = LightWeaverDatabase.getInstance(application).deviceConfigurationRepository()
+        deviceConfigurations = repository.getAll()
     }
-    val text: LiveData<String> = _text
 
-    private val _deviceDescriptorList = MutableLiveData<MutableList<DeviceDescriptor>>().apply {
-        value = mutableListOf()
-    }
-    val deviceDescriptorList: LiveData<MutableList<DeviceDescriptor>> = _deviceDescriptorList
+//    private val _deviceDescriptorList = MutableLiveData<MutableList<DeviceDescriptor>>().apply {
+//        value = mutableListOf()
+//    }
+//    val deviceDescriptorList: LiveData<MutableList<DeviceDescriptor>> = _deviceDescriptorList
+//
+//    fun addDeviceDescriptor(descriptor: DeviceDescriptor) {
+//        _deviceDescriptorList.value?.add(descriptor)
+//        _deviceDescriptorList.notifyObserver()
+//    }
 
-    fun addDeviceDescriptor(descriptor: DeviceDescriptor) {
-        _deviceDescriptorList.value?.add(descriptor)
-        Log.i("DEV", "Added descriptor ${descriptor.name}")
-        _deviceDescriptorList.notifyObserver()
-    }
 }
