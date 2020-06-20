@@ -28,10 +28,6 @@ class MainActivity : AppCompatActivity() {
                     .setAction("Action", null).show()
         }
 
-        findViewById<FloatingActionButton>(R.id.fab_settings)?.setOnClickListener { view ->
-            Snackbar.make(view, "Settings Some Stuff", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
@@ -58,13 +54,18 @@ class MainActivity : AppCompatActivity() {
         // determine the appropriate FAB for the current destination and hide all others
         var visibleFab: FloatingActionButton? = when (destinationId) {
             R.id.nav_devices -> findViewById(R.id.fab_add)
-            R.id.nav_scenes, R.id.nav_settings -> findViewById(R.id.fab_settings)
             else -> null
         }
 
         if (visibleFab?.id != R.id.fab_add) findViewById<FloatingActionButton>(R.id.fab_add).hide()
-        if (visibleFab?.id != R.id.fab_settings) findViewById<FloatingActionButton>(R.id.fab_settings).hide()
 
         visibleFab?.show()
+
+        // TODO: Once we switch between FABs use this to get the pop-in and pop-out transition
+        //findViewById<FloatingActionButton>(R.id.fab_add).hide(object : FloatingActionButton.OnVisibilityChangedListener() {
+        //    override fun onHidden(fab: FloatingActionButton?) {
+        //        fab?.show()
+        //    }
+        //})
     }
 }
