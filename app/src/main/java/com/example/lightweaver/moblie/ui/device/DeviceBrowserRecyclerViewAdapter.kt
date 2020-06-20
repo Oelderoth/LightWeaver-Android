@@ -1,13 +1,16 @@
 package com.example.lightweaver.moblie.ui.device
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lightweaver.moblie.R
-import com.example.lightweaver.moblie.persistence.entities.DeviceConfiguration
+import com.example.lightweaver.moblie.domain.device.DeviceConfiguration
 
 class DeviceBrowserRecyclerViewAdapter(context: Context, private val deviceConfigurations: List<DeviceConfiguration>):
     RecyclerView.Adapter<DeviceBrowserRecyclerViewAdapter.ViewHolder>() {
@@ -29,11 +32,14 @@ class DeviceBrowserRecyclerViewAdapter(context: Context, private val deviceConfi
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val deviceConfiguration = deviceConfigurations[position]
         holder.deviceName.text = deviceConfiguration.name
+        holder.deviceDescription.text = deviceConfiguration.description
+        holder.itemView.setOnClickListener { Log.i("LW","Tapped on ${deviceConfiguration.name}") }
     }
 
     // stores and recycles views as they are scrolled off screen
     class ViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var deviceName: TextView = itemView.findViewById(R.id.device_name_text)
+        val deviceName: TextView = itemView.findViewById(R.id.device_name_text)
+        val deviceDescription: TextView = itemView.findViewById(R.id.device_description_text)
+        val deviceTypeIcon: ImageView = itemView.findViewById(R.id.device_type_icon)
     }
-
 }

@@ -1,11 +1,13 @@
 package com.example.lightweaver.moblie.persistence.entities
 
-import androidx.room.Ignore
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-// DeviceConfiguration acts as a parent class to enforce that all types of device configurations
-// contain the required fields. It is not directly persisted, and so has no @Entity annotation.
-// Since all fields are open and overridden by subclasses, they are marked as @Ignore to prevent duplicate columns
-abstract class DeviceConfiguration(
-    @Ignore open val uid: String,
-    @Ignore open val name: String,
-    @Ignore open val description: String?)
+
+@Entity(tableName = "device_configuration")
+class DeviceConfiguration(
+    @PrimaryKey val uid: String,
+    val name: String,
+    val description: String?,
+    val connectionType: DeviceConnectionType,
+    val deviceType: DeviceType)

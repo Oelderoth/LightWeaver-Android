@@ -5,13 +5,16 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.lightweaver.moblie.persistence.dao.HttpDeviceConfigurationDao
-import com.example.lightweaver.moblie.persistence.entities.HttpDeviceConfiguration
+import com.example.lightweaver.moblie.persistence.dao.DeviceConfigurationDao
+import com.example.lightweaver.moblie.persistence.entities.DeviceConfiguration
+import com.example.lightweaver.moblie.persistence.entities.DeviceConnectionType
+import com.example.lightweaver.moblie.persistence.entities.DeviceType
 import com.example.lightweaver.moblie.persistence.repository.DeviceConfigurationRepository
 
-@Database(entities = [HttpDeviceConfiguration::class], version = 1)
+@Database(entities = [DeviceConfiguration::class], version = 1)
+@TypeConverters(DeviceConnectionType.Companion.Converter::class, DeviceType.Companion.Converter::class)
 abstract class LightWeaverDatabase: RoomDatabase() {
-    protected abstract fun httpDeviceConfigurationDao(): HttpDeviceConfigurationDao
+    protected abstract fun httpDeviceConfigurationDao(): DeviceConfigurationDao
 
     fun deviceConfigurationRepository(): DeviceConfigurationRepository {
         return DeviceConfigurationRepository(httpDeviceConfigurationDao())

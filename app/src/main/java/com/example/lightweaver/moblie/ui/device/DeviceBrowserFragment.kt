@@ -6,16 +6,12 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lightweaver.moblie.R
-import com.example.lightweaver.moblie.persistence.LightWeaverDatabase
-import com.example.lightweaver.moblie.persistence.entities.HttpDeviceConfiguration
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.random.Random
+
 
 class DeviceBrowserFragment : Fragment() {
 
@@ -31,6 +27,7 @@ class DeviceBrowserFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_device_browser, container, false)
 
         val recyclerView = root.findViewById<RecyclerView>(R.id.device_browser_view)
+        recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = DeviceBrowserRecyclerViewAdapter(requireContext(), viewModel.deviceConfigurations.value ?: listOf())
 

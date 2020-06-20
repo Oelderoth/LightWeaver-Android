@@ -3,12 +3,8 @@ package com.example.lightweaver.moblie.ui.device
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.lightweaver.moblie.notifyObserver
+import com.example.lightweaver.moblie.domain.device.DeviceConfiguration
 import com.example.lightweaver.moblie.persistence.LightWeaverDatabase
-import com.example.lightweaver.moblie.persistence.entities.DeviceConfiguration
-import com.oelderoth.lightweaver.core.devices.DeviceDescriptor
 
 class DeviceBrowserViewModel(application: Application) : AndroidViewModel(application) {
     val deviceConfigurations: LiveData<List<DeviceConfiguration>>
