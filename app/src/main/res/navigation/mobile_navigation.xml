@@ -9,7 +9,11 @@
         android:id="@+id/nav_devices"
         android:name="com.example.lightweaver.moblie.ui.device.DeviceBrowserFragment"
         android:label="@string/menu_devices"
-        tools:layout="@layout/fragment_device_browser" />
+        tools:layout="@layout/fragment_device_browser" >
+        <action
+            android:id="@+id/action_start_create_device"
+            app:destination="@id/nav_create_device_dialog" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_device_groups"
@@ -32,4 +36,14 @@
         android:name="com.example.lightweaver.moblie.ui.scene.SceneBrowserFragment"
         android:label="@string/menu_scenes"
         tools:layout="@layout/fragment_scene_browser" />
+    <fragment
+        android:id="@+id/nav_create_device_dialog"
+        android:name="com.example.lightweaver.moblie.ui.device.CreateDeviceFragment"
+        android:label="Create Device"
+        tools:layout="@layout/fragment_create_device" >
+        <action
+            android:id="@+id/action_end_create_device"
+            app:destination="@id/nav_devices"
+            app:popUpTo="@id/nav_devices" />
+    </fragment>
 </navigation>

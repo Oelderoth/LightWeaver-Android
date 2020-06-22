@@ -11,7 +11,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,12 +21,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-
-        findViewById<FloatingActionButton>(R.id.fab_add)?.setOnClickListener { view ->
-            Snackbar.make(view, "Added a thing", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
@@ -41,6 +34,10 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             showActiveFloatingActionButton(destination.id)
+        }
+
+        findViewById<FloatingActionButton>(R.id.fab_add)?.setOnClickListener { _ ->
+            navController.navigate(R.id.action_start_create_device)
         }
     }
 
