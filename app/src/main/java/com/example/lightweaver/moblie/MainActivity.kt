@@ -1,6 +1,7 @@
 package com.example.lightweaver.moblie
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -54,7 +55,9 @@ class MainActivity : AppCompatActivity() {
             else -> null
         }
 
-        if (visibleFab?.id != R.id.fab_add) findViewById<FloatingActionButton>(R.id.fab_add).hide()
+        if (visibleFab?.id != R.id.fab_add) {
+            findViewById<FloatingActionButton>(R.id.fab_add).hide()
+        }
 
         visibleFab?.show()
 

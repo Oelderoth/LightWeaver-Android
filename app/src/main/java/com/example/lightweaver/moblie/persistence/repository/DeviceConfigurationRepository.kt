@@ -23,10 +23,17 @@ class DeviceConfigurationRepository(private val deviceConfigurationDao: DeviceCo
     fun getAll(): LiveData<List<DeviceConfiguration>> {
         //TODO: Remove temporary stub once insert/update functionality is in place to add real data
         return MutableLiveData<List<DeviceConfiguration>>().apply {
-            value = listOf(DeviceConfiguration("0001", "Device 001", "First Test Device", HttpConnectionConfiguration("192.168.0.145",80,true,true), LightBasicConfiguration()),
+            val list = listOf(DeviceConfiguration("0001", "Device 001", "First Test Device", HttpConnectionConfiguration("192.168.0.145",80,true,true), LightBasicConfiguration()),
                 DeviceConfiguration("0002", "Device 002", "Second Test Device", HttpConnectionConfiguration("192.168.0.145",80,true,true), LightStripConfiguration()),
                 DeviceConfiguration("0003", "Device 003", "Third Test Device", HttpConnectionConfiguration("192.168.0.145",80,true,true), LightTriPanelConfiguration()),
                 DeviceConfiguration("0004", "Device 004", "Unknown Type Device", HttpConnectionConfiguration("192.168.0.145",80,true,true), object: DeviceTypeConfiguration() {}))
+            val bigList = mutableListOf<DeviceConfiguration>()
+            bigList.addAll(list)
+            bigList.addAll(list)
+            bigList.addAll(list)
+            bigList.addAll(list)
+            bigList.addAll(list)
+            value = bigList
         }
 
 //        return Transformations.map(deviceConfigurationDao.getAll()) { list ->

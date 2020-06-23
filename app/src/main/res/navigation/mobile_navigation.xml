@@ -40,10 +40,5 @@
         android:id="@+id/nav_create_device_dialog"
         android:name="com.example.lightweaver.moblie.ui.device.CreateDeviceFragment"
         android:label="Create Device"
-        tools:layout="@layout/fragment_create_device" >
-        <action
-            android:id="@+id/action_end_create_device"
-            app:destination="@id/nav_devices"
-            app:popUpTo="@id/nav_devices" />
-    </fragment>
+        tools:layout="@layout/fragment_create_device" />
 </navigation>
