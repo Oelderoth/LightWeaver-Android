@@ -5,19 +5,26 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.lightweaver.moblie.persistence.dao.DeviceAndTypeConfigurationDao
 import com.example.lightweaver.moblie.persistence.dao.DeviceConfigurationDao
 import com.example.lightweaver.moblie.persistence.entities.DeviceConfiguration
-import com.example.lightweaver.moblie.persistence.entities.DeviceConnectionType
 import com.example.lightweaver.moblie.persistence.entities.DeviceType
+import com.example.lightweaver.moblie.persistence.entities.DeviceTypeConfiguration
 import com.example.lightweaver.moblie.persistence.repository.DeviceConfigurationRepository
 
-@Database(entities = [DeviceConfiguration::class], version = 1)
-@TypeConverters(DeviceConnectionType.Companion.Converter::class, DeviceType.Companion.Converter::class)
+@Database(entities = [
+    DeviceConfiguration.HttpDeviceConfiguration::class,
+    DeviceTypeConfiguration.BasicDeviceConfiguration::class,
+    DeviceTypeConfiguration.LightStripDeviceConfiguration::class,
+    DeviceTypeConfiguration.TriPanelDeviceConfiguration::class
+], version = 1)
+@TypeConverters(DeviceType.Companion.Converter::class)
 abstract class LightWeaverDatabase: RoomDatabase() {
     protected abstract fun httpDeviceConfigurationDao(): DeviceConfigurationDao
+    protected abstract fun httpDeviceAndTypeConfigurationDao(): DeviceAndTypeConfigurationDao
 
     fun deviceConfigurationRepository(): DeviceConfigurationRepository {
-        return DeviceConfigurationRepository(httpDeviceConfigurationDao())
+        return DeviceConfigurationRepository(httpDeviceConfigurationDao(), httpDeviceAndTypeConfigurationDao())
     }
 
     companion object {

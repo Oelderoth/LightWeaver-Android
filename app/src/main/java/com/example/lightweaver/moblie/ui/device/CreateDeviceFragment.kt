@@ -2,6 +2,7 @@ package com.example.lightweaver.moblie.ui.device
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation.findNavController
 import com.example.lightweaver.moblie.R
 import com.example.lightweaver.moblie.databinding.FragmentCreateDeviceBinding
@@ -20,6 +22,8 @@ import com.example.lightweaver.moblie.domain.device.type.LightBasicConfiguration
 import com.example.lightweaver.moblie.domain.device.type.LightStripConfiguration
 import com.example.lightweaver.moblie.domain.device.type.LightTriPanelConfiguration
 import kotlinx.android.synthetic.main.fragment_create_device.view.*
+import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 
 class CreateDeviceFragment : Fragment() {
@@ -86,11 +90,15 @@ class CreateDeviceFragment : Fragment() {
             }
 
             // TODO: Attempt to connect to device and get UID
-            val deviceConfiguration = DeviceConfiguration("", viewModel.deviceName.value!!, "", connectionConfig, typeConfig)
+            val randomUID = Random.nextBytes(4).joinToString("") { "%02x".format(it) }
+            val deviceConfiguration = DeviceConfiguration(randomUID, viewModel.deviceName.value!!, null, connectionConfig, typeConfig)
 
-            // TODO: Insert into DB
-
-            findNavController(requireView()).popBackStack(R.id.nav_devices, false)
+            viewModel.viewModelScope.launch {
+                Log.i("LW", "Inserting device ${randomUID} into DB")
+                viewModel.insertDevice(deviceConfiguration)
+                Log.i("LW", "Insert Complete! Navigating Back")
+                findNavController(requireView()).popBackStack(R.id.nav_devices, false)
+            }
         }
 
         return root

@@ -37,7 +37,7 @@ class DeviceBrowserRecyclerViewAdapter(val context: Context, private val deviceC
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val deviceConfiguration = deviceConfigurations[position]
         holder.deviceName.text = deviceConfiguration.name
-        holder.deviceDescription.text = deviceConfiguration.description
+        holder.deviceDescription.text = deviceConfiguration.description ?: "No Description"
         holder.deviceTypeIcon.setImageDrawable(ContextCompat.getDrawable(context, deviceConfiguration.type.drawable))
         holder.deviceTypeIcon.colorFilter = PorterDuffColorFilter(ContextCompat.getColor(context, deviceConfiguration.connection.iconColor), PorterDuff.Mode.SRC_IN)
         holder.deviceConnectionErrorFlag.visibility = if (deviceConfiguration.connection.errorFlagVisible) View.VISIBLE else View.INVISIBLE

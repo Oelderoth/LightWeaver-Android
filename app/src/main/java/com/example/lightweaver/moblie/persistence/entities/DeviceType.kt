@@ -3,6 +3,7 @@ package com.example.lightweaver.moblie.persistence.entities
 import androidx.room.TypeConverter
 
 enum class DeviceType {
+    BASIC,
     LIGHTSTRIP,
     TRIPANEL;
 

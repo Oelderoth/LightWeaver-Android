@@ -4,6 +4,13 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.lightweaver.moblie.R
+import com.example.lightweaver.moblie.domain.device.DeviceConfiguration
+import com.example.lightweaver.moblie.persistence.LightWeaverDatabase
+import com.example.lightweaver.moblie.persistence.repository.DeviceConfigurationRepository
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 class CreateDeviceViewModel(application: Application) : AndroidViewModel(application) {
     private val ipAddressRegex = Regex("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$")
@@ -45,8 +52,11 @@ class CreateDeviceViewModel(application: Application) : AndroidViewModel(applica
     }
 
     val isValid: LiveData<Boolean>
+    private val repository: DeviceConfigurationRepository =
+        LightWeaverDatabase.getInstance(application).deviceConfigurationRepository()
 
     init {
+
         deviceType.value = deviceTypeList[1]
         connectionType.value = connectionTypeList[0]
         port.value = "80"
@@ -88,18 +98,16 @@ class CreateDeviceViewModel(application: Application) : AndroidViewModel(applica
         val ipAddress = ipAddress.value
         val port = port.value?.toIntOrNull()
 
-        Log.i("LW", "Validating")
         if (deviceName.isNullOrEmpty() || deviceName?.length > 64) return false
-        Log.i("LW", "Name Valid")
         if (!deviceTypeList.contains(deviceType)) return false
-        Log.i("LW", "Type Valid")
         if (!connectionTypeList.contains(connectionType)) return false
-        Log.i("LW", "Connection Valid")
         if (ipAddress == null || !ipAddressRegex.matches(ipAddress)) return false
-        Log.i("LW", "IP Valid")
         if (port == null || port < 0 || port > 65535) return false
-        Log.i("LW", "Port Valid")
         return true
+    }
+
+    suspend fun insertDevice(device: DeviceConfiguration) {
+        repository.insert(device)
     }
 
 }
