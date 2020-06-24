@@ -3,29 +3,38 @@ package com.example.lightweaver.moblie.ui.device
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.lightweaver.moblie.R
 import com.google.android.material.snackbar.Snackbar
 
+
 class DeviceBrowserFragment : Fragment() {
 
-    private lateinit var deviceBrowserViewModel: DeviceBrowserViewModel
+    private lateinit var viewModel: DeviceBrowserViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        deviceBrowserViewModel =
+        viewModel =
                 ViewModelProviders.of(this).get(DeviceBrowserViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_device_browser, container, false)
-        val textView: TextView = root.findViewById(R.id.text_device_browser)
-        deviceBrowserViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
+
+        val recyclerView = root.findViewById<RecyclerView>(R.id.device_browser_view)
+        recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recyclerView.adapter = DeviceBrowserRecyclerViewAdapter(requireContext(), viewModel.deviceInfo.value ?: listOf())
+
+        viewModel.deviceInfo.observe(viewLifecycleOwner, Observer {
+            recyclerView.swapAdapter(DeviceBrowserRecyclerViewAdapter(requireContext(), viewModel.deviceInfo.value ?: listOf()), false)
         })
+
         setHasOptionsMenu(true)
         return root
     }

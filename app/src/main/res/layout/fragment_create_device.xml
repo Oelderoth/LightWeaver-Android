@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.lightweaver.moblie.ui.device.CreateDeviceViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/create_device_scroll_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/create_device_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/create_device_content_layout"
+                android:paddingBottom="16dp">
+
+                <ImageView
+                    android:id="@+id/device_name_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:contentDescription="Device Name Icon"
+                    android:tint="?attr/colorControlNormal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/device_name_layout"
+                    app:srcCompat="@drawable/ic_person_black_24" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/device_name_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:hint="Device Name"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="64"
+                    app:errorEnabled="true"
+                    app:helperTextEnabled="true"
+                    app:hintAnimationEnabled="true"
+                    app:hintEnabled="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/device_name_icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/device_name_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:imeOptions="actionDone"
+                        android:text="@={viewModel.deviceName}"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/device_type_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:tint="?attr/colorControlNormal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/device_type_layout"
+                    app:srcCompat="@{viewModel.deviceTypeIcon, default=@drawable/ic_device_led}"
+                    android:contentDescription="Device Type Icon"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/device_type_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:hint="Device Type"
+                    app:counterEnabled="false"
+                    app:counterMaxLength="64"
+                    app:errorEnabled="false"
+                    app:helperText="Cannot be changed after device is created"
+                    app:helperTextEnabled="true"
+                    app:hintAnimationEnabled="true"
+                    app:hintEnabled="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/device_name_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/device_name_layout">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/device_type_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:editable="false"
+                        android:inputType="none"
+                        tools:ignore="Deprecated"
+                        android:singleLine="true"
+                        android:text="@={viewModel.deviceType}"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/device_connection_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:tint="?attr/colorControlNormal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/device_connection_layout"
+                    app:srcCompat="@{viewModel.connectionTypeIcon, default=@drawable/ic_wifi_black_24}"
+                    android:contentDescription="Device Connection Icon"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/device_connection_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:hint="Connection Method"
+                    app:counterEnabled="false"
+                    app:counterMaxLength="64"
+                    app:errorEnabled="false"
+                    app:helperTextEnabled="true"
+                    app:hintAnimationEnabled="true"
+                    app:hintEnabled="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/device_name_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/device_type_layout">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/device_connection_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:editable="false"
+                        android:inputType="none"
+                        tools:ignore="Deprecated"
+                        android:singleLine="true"
+                        android:text="@={viewModel.connectionType}"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/device_ipaddress_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:hint="IP Address"
+                    app:errorEnabled="true"
+                    app:hintAnimationEnabled="true"
+                    app:hintEnabled="true"
+                    app:layout_constraintEnd_toStartOf="@+id/device_port_layout"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_weight="3"
+                    app:layout_constraintStart_toStartOf="@+id/device_connection_layout"
+                    app:layout_constraintTop_toBottomOf="@+id/device_connection_layout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/device_ipaddress_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number|numberDecimal"
+                        android:digits="0123456789."
+                        android:singleLine="true"
+                        android:imeOptions="actionNext"
+                        android:text="@={viewModel.ipAddress}"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/device_port_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:hint="Port"
+                    app:errorEnabled="true"
+                    app:hintAnimationEnabled="true"
+                    app:hintEnabled="true"
+                    app:layout_constraintEnd_toEndOf="@+id/device_connection_layout"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toEndOf="@+id/device_ipaddress_layout"
+                    app:layout_constraintTop_toBottomOf="@+id/device_connection_layout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/device_port_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@={viewModel.port}"
+                        android:inputType="number|numberDecimal"
+                        android:digits="0123456789"
+                        android:singleLine="true" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/advanced_settings_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:drawableEnd="@{viewModel.advancedSettingsIcon}"
+                    android:text="Advanced Settings"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/device_ipaddress_layout"
+                    app:layout_constraintTop_toBottomOf="@+id/device_ipaddress_layout"
+                    android:padding="8dp"/>
+
+                <CheckBox
+                    android:id="@+id/device_discoverable_check"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:checked="@={viewModel.discoverableDevice}"
+                    android:text="Discoverable"
+                    app:layout_constraintEnd_toEndOf="@+id/device_port_layout"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="@+id/device_local_check"
+                    app:layout_constraintTop_toBottomOf="@+id/device_local_helper_text" />
+
+                <TextView
+                    android:id="@+id/device_discoverable_helper_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:text="If the IP Address of a device is not static, the system will automatically attempt to reconnect to discoverable devices  in the event their IP Address changes"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="@+id/device_discoverable_check"
+                    app:layout_constraintStart_toStartOf="@+id/device_discoverable_check"
+                    app:layout_constraintTop_toBottomOf="@+id/device_discoverable_check" />
+
+                <CheckBox
+                    android:id="@+id/device_local_check"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:checked="@={viewModel.localDevice}"
+                    android:text="Local Device"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/advanced_settings_text"
+                    app:layout_constraintTop_toBottomOf="@+id/advanced_settings_text" />
+
+                <TextView
+                    android:id="@+id/device_local_helper_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="The system will not attempt to connect or re-discover Local Devices unless you are connected to the current network"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/device_local_check"
+                    app:layout_constraintTop_toBottomOf="@+id/device_local_check" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/advanced_settings_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="device_local_check,device_local_helper_text,device_discoverable_check,device_discoverable_helper_text"
+                    android:visibility="@{viewModel.advancedSettingsVisible}"
+                    tools:visibility="visible"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <View
+            android:id="@+id/divider"
+            style="@style/Divider"
+            app:layout_constraintBottom_toBottomOf="@+id/create_device_scroll_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/create_device_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="Create"
+            app:icon="@drawable/ic_add_white_24"
+            app:iconPadding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/create_device_scroll_layout" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

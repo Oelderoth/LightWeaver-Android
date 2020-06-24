@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:contentDescription="@string/device_connection_error">
+
+    <ImageView
+        android:id="@+id/device_type_icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/device_type_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_device_unknown" />
+
+    <TextView
+        android:id="@+id/device_name_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:textAlignment="textStart"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/device_configuration"
+        app:layout_constraintStart_toEndOf="@+id/device_type_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Device Name" />
+
+    <TextView
+        android:id="@+id/device_description_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:alpha="0.6"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/device_name_text"
+        app:layout_constraintStart_toStartOf="@+id/device_name_text"
+        app:layout_constraintTop_toBottomOf="@+id/device_name_text"
+        tools:text="Description" />
+
+    <ImageButton
+        android:id="@+id/device_configuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:alpha="0.2"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/device_settings"
+        android:padding="8dp"
+        android:src="@drawable/ic_menu_settings"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/device_connection_error"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:tint="@color/deviceError"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_corner_flag" />
+</androidx.constraintlayout.widget.ConstraintLayout>
