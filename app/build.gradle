@@ -7,7 +7,7 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        applicationId "com.example.lightweaver.moblie"
+        applicationId "com.example.lightweaver.mobile"
         minSdkVersion 27
         targetSdkVersion 29
         versionCode 1

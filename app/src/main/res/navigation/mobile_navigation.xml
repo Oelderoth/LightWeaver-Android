@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_devices"
-        android:name="com.example.lightweaver.moblie.ui.device.DeviceBrowserFragment"
+        android:name="com.example.lightweaver.mobile.ui.device.DeviceBrowserFragment"
         android:label="@string/menu_devices"
         tools:layout="@layout/fragment_device_browser" >
         <action
@@ -17,28 +17,28 @@
 
     <fragment
         android:id="@+id/nav_device_groups"
-        android:name="com.example.lightweaver.moblie.ui.devicegroup.DeviceGroupBrowserFragment"
+        android:name="com.example.lightweaver.mobile.ui.devicegroup.DeviceGroupBrowserFragment"
         android:label="@string/menu_device_groups"
         tools:layout="@layout/fragment_device_group_browser" />
 
     <fragment
         android:id="@+id/nav_palette"
-        android:name="com.example.lightweaver.moblie.ui.palette.PaletteBrowserFragment"
+        android:name="com.example.lightweaver.mobile.ui.palette.PaletteBrowserFragment"
         android:label="@string/menu_palette"
         tools:layout="@layout/fragment_palette_browser" />
     <fragment
         android:id="@+id/nav_settings"
-        android:name="com.example.lightweaver.moblie.ui.settings.SettingsFragment"
+        android:name="com.example.lightweaver.mobile.ui.settings.SettingsFragment"
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/nav_scenes"
-        android:name="com.example.lightweaver.moblie.ui.scene.SceneBrowserFragment"
+        android:name="com.example.lightweaver.mobile.ui.scene.SceneBrowserFragment"
         android:label="@string/menu_scenes"
         tools:layout="@layout/fragment_scene_browser" />
     <fragment
         android:id="@+id/nav_create_device_dialog"
-        android:name="com.example.lightweaver.moblie.ui.device.CreateDeviceFragment"
+        android:name="com.example.lightweaver.mobile.ui.device.CreateDeviceFragment"
         android:label="Create Device"
         tools:layout="@layout/fragment_create_device" />
 </navigation>

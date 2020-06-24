@@ -1,0 +1,18 @@
+package com.example.lightweaver.mobile.persistence.entities
+
+import androidx.room.TypeConverter
+
+enum class DeviceType {
+    BASIC,
+    LIGHTSTRIP,
+    TRIPANEL;
+
+    companion object {
+        class Converter {
+            @TypeConverter
+            fun toString(enum: DeviceType): String = enum.name
+            @TypeConverter
+            fun toEnum(name: String): DeviceType = valueOf(name)
+        }
+    }
+}
