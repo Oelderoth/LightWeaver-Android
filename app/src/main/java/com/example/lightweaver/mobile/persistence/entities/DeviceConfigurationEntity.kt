@@ -3,8 +3,9 @@ package com.example.lightweaver.mobile.persistence.entities
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.lightweaver.mobile.domain.device.DeviceType
 
-sealed class DeviceConfiguration(@PrimaryKey val uid: String,
+sealed class DeviceConfigurationEntity(@PrimaryKey val uid: String,
                                   val name: String,
                                   val description: String?,
                                   val deviceType: DeviceType){
@@ -17,9 +18,9 @@ sealed class DeviceConfiguration(@PrimaryKey val uid: String,
         deviceType: DeviceType,
         @Embedded
         val connectionInfo: HttpInfo
-    ) : DeviceConfiguration(uid, name, description, deviceType) {
+    ) : DeviceConfigurationEntity(uid, name, description, deviceType) {
 
-        class HttpInfo(val address: String, val port: Int, val local: Boolean, val discoverable: Boolean)
+        class HttpInfo(val protocol: String, val host: String, val port: Int, val localNetwork: String?, val discoverable: Boolean)
     }
 }
 
