@@ -1,3 +1,3 @@
 package com.example.lightweaver.mobile.persistence.entities
 
-data class DeviceAndTypeConfiguration(val deviceConfiguration: DeviceConfiguration, val typeConfiguration: DeviceTypeConfiguration)
+data class DeviceAndTypeConfigurationEntity(val deviceConfiguration: DeviceConfigurationEntity, val typeConfiguration: DeviceTypeConfigurationEntity)

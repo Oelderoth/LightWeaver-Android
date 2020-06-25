@@ -1,6 +1,11 @@
 package com.example.lightweaver.mobile.ui.device
 
 import android.app.Activity
+import android.content.Context
+import android.net.NetworkInfo
+import android.net.Uri
+import android.net.wifi.WifiInfo
+import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -17,12 +24,11 @@ import androidx.navigation.Navigation.findNavController
 import com.example.lightweaver.mobile.R
 import com.example.lightweaver.mobile.databinding.FragmentCreateDeviceBinding
 import com.example.lightweaver.mobile.domain.device.DeviceConfiguration
-import com.example.lightweaver.mobile.domain.device.connection.HttpConnectionConfiguration
-import com.example.lightweaver.mobile.domain.device.type.LightBasicConfiguration
-import com.example.lightweaver.mobile.domain.device.type.LightStripConfiguration
-import com.example.lightweaver.mobile.domain.device.type.LightTriPanelConfiguration
+import com.example.lightweaver.mobile.domain.device.configuration.ConnectionConfiguration
+import com.example.lightweaver.mobile.domain.device.configuration.DeviceTypeConfiguration
 import kotlinx.android.synthetic.main.fragment_create_device.view.*
 import kotlinx.coroutines.launch
+import java.net.URL
 import kotlin.random.Random
 
 
@@ -79,28 +85,47 @@ class CreateDeviceFragment : Fragment() {
 
         root.create_device_button.setOnClickListener {
             val connectionConfig = when(viewModel.connectionType.value) {
-                "HTTP" -> HttpConnectionConfiguration(viewModel.ipAddress.value!!, viewModel.port.value!!.toInt(), viewModel.localDevice.value!!, viewModel.discoverableDevice.value!!)
+                "HTTP" -> {
+                    val url = URL(Uri.Builder()
+                            .scheme("http")
+                            .encodedAuthority("${viewModel.ipAddress.value!!}:${viewModel.port.value!!.toInt()}")
+                            .build().toString())
+                    val localNetwork = if (viewModel.localDevice.value!!) getNetworkSSID(requireContext()) else null
+                    ConnectionConfiguration.HttpConfiguration(url, localNetwork, viewModel.discoverableDevice.value!!)
+                }
                 else -> throw RuntimeException("Unknown Connection Config")
             }
             val typeConfig = when(viewModel.deviceType.value) {
-                "Basic Light" -> LightBasicConfiguration()
-                "Light Strip" -> LightStripConfiguration()
-                "TriPanel" -> LightTriPanelConfiguration()
+                "Basic Light" -> DeviceTypeConfiguration.BasicDeviceConfiguration()
+                "Light Strip" -> DeviceTypeConfiguration.LightStripDeviceConfiguration()
+                "TriPanel" -> DeviceTypeConfiguration.TriPanelDeviceConfiguration()
                 else -> throw RuntimeException("Unknown Type Config")
             }
 
-            // TODO: Attempt to connect to device and get UID
+            // TODO: Verify device is connectible, and retrieve the UID
             val randomUID = Random.nextBytes(4).joinToString("") { "%02x".format(it) }
             val deviceConfiguration = DeviceConfiguration(randomUID, viewModel.deviceName.value!!, null, connectionConfig, typeConfig)
 
             viewModel.viewModelScope.launch {
-                Log.i("LW", "Inserting device ${randomUID} into DB")
                 viewModel.insertDevice(deviceConfiguration)
-                Log.i("LW", "Insert Complete! Navigating Back")
                 findNavController(requireView()).popBackStack(R.id.nav_devices, false)
             }
         }
 
         return root
+    }
+
+    private fun getNetworkSSID(context: Context): String? {
+        val manager = context.getSystemService(WifiManager::class.java)
+        if (manager.isWifiEnabled) {
+                val wifiInfo = manager.connectionInfo
+                if (wifiInfo != null) {
+                    val state = WifiInfo.getDetailedStateOf(wifiInfo.supplicantState);
+                    if (state == NetworkInfo.DetailedState.CONNECTED || state == NetworkInfo.DetailedState.OBTAINING_IPADDR) {
+                        return wifiInfo.ssid;
+                    }
+                }
+        }
+        return null
     }
 }

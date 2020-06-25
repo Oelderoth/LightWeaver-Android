@@ -7,18 +7,17 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.lightweaver.mobile.persistence.dao.DeviceAndTypeConfigurationDao
 import com.example.lightweaver.mobile.persistence.dao.DeviceConfigurationDao
-import com.example.lightweaver.mobile.persistence.entities.DeviceConfiguration
-import com.example.lightweaver.mobile.persistence.entities.DeviceType
-import com.example.lightweaver.mobile.persistence.entities.DeviceTypeConfiguration
+import com.example.lightweaver.mobile.persistence.converters.DeviceTypeConverter
+import com.example.lightweaver.mobile.persistence.entities.*
 import com.example.lightweaver.mobile.persistence.repository.DeviceConfigurationRepository
 
 @Database(entities = [
-    DeviceConfiguration.HttpDeviceConfiguration::class,
-    DeviceTypeConfiguration.BasicDeviceConfiguration::class,
-    DeviceTypeConfiguration.LightStripDeviceConfiguration::class,
-    DeviceTypeConfiguration.TriPanelDeviceConfiguration::class
+    DeviceConfigurationEntity.HttpDeviceConfiguration::class,
+    DeviceTypeConfigurationEntity.BasicDeviceConfiguration::class,
+    DeviceTypeConfigurationEntity.LightStripDeviceConfiguration::class,
+    DeviceTypeConfigurationEntity.TriPanelDeviceConfiguration::class
 ], version = 1)
-@TypeConverters(DeviceType.Companion.Converter::class)
+@TypeConverters(DeviceTypeConverter::class)
 abstract class LightWeaverDatabase: RoomDatabase() {
     protected abstract fun httpDeviceConfigurationDao(): DeviceConfigurationDao
     protected abstract fun httpDeviceAndTypeConfigurationDao(): DeviceAndTypeConfigurationDao

@@ -1,6 +1,8 @@
 package com.example.lightweaver.mobile.ui.device
 
 import android.app.Application
+import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.lifecycle.*
 import com.example.lightweaver.mobile.R
 import com.example.lightweaver.mobile.domain.device.DeviceConfiguration
@@ -51,7 +53,6 @@ class CreateDeviceViewModel(application: Application) : AndroidViewModel(applica
         LightWeaverDatabase.getInstance(application).deviceConfigurationRepository()
 
     init {
-
         deviceType.value = deviceTypeList[1]
         connectionType.value = connectionTypeList[0]
         port.value = "80"

@@ -1,46 +1,46 @@
 package com.example.lightweaver.mobile.persistence.repository
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.example.lightweaver.mobile.domain.device.ConnectionType
 import com.example.lightweaver.mobile.domain.device.DeviceConfiguration
-import com.example.lightweaver.mobile.domain.device.DeviceSummary
-import com.example.lightweaver.mobile.domain.device.connection.HttpConnectionConfiguration
-import com.example.lightweaver.mobile.domain.device.type.LightBasicConfiguration
-import com.example.lightweaver.mobile.domain.device.type.LightStripConfiguration
-import com.example.lightweaver.mobile.domain.device.type.LightTriPanelConfiguration
+import com.example.lightweaver.mobile.domain.device.DeviceType
+import com.example.lightweaver.mobile.domain.device.DeviceView
+import com.example.lightweaver.mobile.domain.device.configuration.ConnectionConfiguration
+import com.example.lightweaver.mobile.domain.device.configuration.DeviceTypeConfiguration
 import com.example.lightweaver.mobile.persistence.dao.DeviceAndTypeConfigurationDao
 import com.example.lightweaver.mobile.persistence.dao.DeviceConfigurationDao
-import com.example.lightweaver.mobile.persistence.entities.DeviceAndTypeConfiguration
-import com.example.lightweaver.mobile.persistence.entities.DeviceType
+import com.example.lightweaver.mobile.persistence.entities.DeviceAndTypeConfigurationEntity
+import com.example.lightweaver.mobile.persistence.entities.DeviceConfigurationEntity
+import com.example.lightweaver.mobile.persistence.entities.DeviceTypeConfigurationEntity
+import java.net.URI
+import java.net.URL
 
 class DeviceConfigurationRepository(
     private val deviceConfigurationDao: DeviceConfigurationDao,
     private val deviceAndTypeConfigurationDao: DeviceAndTypeConfigurationDao) {
 
     suspend fun insert(device: DeviceConfiguration) {
-        val typeConfig = when(device.typeConfiguration) {
-            is LightBasicConfiguration -> com.example.lightweaver.mobile.persistence.entities.DeviceTypeConfiguration.BasicDeviceConfiguration(device.uid)
-            is LightStripConfiguration -> com.example.lightweaver.mobile.persistence.entities.DeviceTypeConfiguration.LightStripDeviceConfiguration(device.uid)
-            is LightTriPanelConfiguration -> com.example.lightweaver.mobile.persistence.entities.DeviceTypeConfiguration.TriPanelDeviceConfiguration(device.uid)
-            else -> throw RuntimeException("Unknown TypeConfiguration: ${device.typeConfiguration::class.simpleName}")
+        val typeConfig = when(device.configuration) {
+            is DeviceTypeConfiguration.BasicDeviceConfiguration -> DeviceTypeConfigurationEntity.BasicDeviceConfiguration(device.uid)
+            is DeviceTypeConfiguration.LightStripDeviceConfiguration -> DeviceTypeConfigurationEntity.LightStripDeviceConfiguration(device.uid)
+            is DeviceTypeConfiguration.TriPanelDeviceConfiguration -> DeviceTypeConfigurationEntity.TriPanelDeviceConfiguration(device.uid)
+            else -> throw RuntimeException("Unknown TypeConfiguration: ${device.configuration::class.simpleName}")
         }
 
-        val deviceType = when(device.typeConfiguration) {
-            is LightBasicConfiguration -> DeviceType.BASIC
-            is LightStripConfiguration -> DeviceType.LIGHTSTRIP
-            is LightTriPanelConfiguration -> DeviceType.TRIPANEL
-            else -> throw RuntimeException("Unknown TypeConfiguration: ${device.typeConfiguration::class.simpleName}")
-        }
+        val deviceType = DeviceType.fromConfiguration(device.configuration)
 
-        val deviceConfig = when(device.connectionConfiguration) {
-            is HttpConnectionConfiguration -> {
-                val httpConfig = com.example.lightweaver.mobile.persistence.entities.DeviceConfiguration.HttpDeviceConfiguration.HttpInfo(
-                    device.connectionConfiguration.address,
-                    device.connectionConfiguration.port,
-                    device.connectionConfiguration.local,
-                    device.connectionConfiguration.discoverable
+        val deviceConfig = when(device.connection) {
+            is ConnectionConfiguration.HttpConfiguration -> {
+                val httpConfig = DeviceConfigurationEntity.HttpDeviceConfiguration.HttpInfo(
+                    device.connection.url.protocol,
+                    device.connection.url.host,
+                    device.connection.url.port,
+                    device.connection.networkName,
+                    device.connection.discoverable
                 )
-                com.example.lightweaver.mobile.persistence.entities.DeviceConfiguration.HttpDeviceConfiguration(
+                DeviceConfigurationEntity.HttpDeviceConfiguration(
                     device.uid,
                     device.name,
                     device.description,
@@ -48,28 +48,33 @@ class DeviceConfigurationRepository(
                     httpConfig
                 )
             }
-            else -> throw RuntimeException("Unknown ConnectionConfiguration: ${device.connectionConfiguration::class.simpleName}")
+            else -> throw RuntimeException("Unknown ConnectionConfiguration: ${device.connection::class.simpleName}")
         }
 
-        deviceAndTypeConfigurationDao.insertDeviceAndTypeConfiguration(DeviceAndTypeConfiguration(deviceConfig, typeConfig))
+        deviceAndTypeConfigurationDao.insertDeviceAndTypeConfiguration(DeviceAndTypeConfigurationEntity(deviceConfig, typeConfig))
     }
 
     suspend fun get(uid: String): DeviceConfiguration? {
         val deviceConfiguration = deviceAndTypeConfigurationDao.getDevice(uid)
         return deviceConfiguration?.let {
             val typeConfiguration = when(it.typeConfiguration) {
-                is com.example.lightweaver.mobile.persistence.entities.DeviceTypeConfiguration.BasicDeviceConfiguration ->
-                    LightBasicConfiguration()
-                is com.example.lightweaver.mobile.persistence.entities.DeviceTypeConfiguration.LightStripDeviceConfiguration ->
-                    LightStripConfiguration()
-                is com.example.lightweaver.mobile.persistence.entities.DeviceTypeConfiguration.TriPanelDeviceConfiguration ->
-                    LightTriPanelConfiguration()
+                is DeviceTypeConfigurationEntity.BasicDeviceConfiguration ->
+                    DeviceTypeConfiguration.BasicDeviceConfiguration()
+                is DeviceTypeConfigurationEntity.LightStripDeviceConfiguration ->
+                    DeviceTypeConfiguration.LightStripDeviceConfiguration()
+                is DeviceTypeConfigurationEntity.TriPanelDeviceConfiguration ->
+                    DeviceTypeConfiguration.LightStripDeviceConfiguration()
                 else -> throw RuntimeException("Unknown DeviceTypeConfiguration: ${it.typeConfiguration::class.simpleName}")
             }
 
             val connectionConfiguration = when (it.deviceConfiguration) {
-                is com.example.lightweaver.mobile.persistence.entities.DeviceConfiguration.HttpDeviceConfiguration ->
-                    HttpConnectionConfiguration(it.deviceConfiguration.connectionInfo.address, it.deviceConfiguration.connectionInfo.port, it.deviceConfiguration.connectionInfo.local, it.deviceConfiguration.connectionInfo.discoverable)
+                is DeviceConfigurationEntity.HttpDeviceConfiguration -> {
+                    val url = URL(Uri.Builder()
+                        .scheme(it.deviceConfiguration.connectionInfo.protocol)
+                        .encodedAuthority("${it.deviceConfiguration.connectionInfo.host}:${it.deviceConfiguration.connectionInfo.port}")
+                        .build().toString())
+                    ConnectionConfiguration.HttpConfiguration(url, it.deviceConfiguration.connectionInfo.localNetwork, it.deviceConfiguration.connectionInfo.discoverable)
+                }
                 else -> throw RuntimeException("Unknown DeviceConfiguration: ${it.deviceConfiguration::class.simpleName}")
             }
 
@@ -77,27 +82,17 @@ class DeviceConfigurationRepository(
         }
     }
 
-    fun getAll(): LiveData<List<DeviceSummary>> {
+    fun getAll(): LiveData<List<DeviceView>> {
         return Transformations.map(deviceConfigurationDao.getAllDevices()) { list ->
             list.map { config ->
-                val type = when (config.deviceType) {
-                    DeviceType.BASIC -> com.example.lightweaver.mobile.domain.device.DeviceType.BASIC
-                    DeviceType.LIGHTSTRIP -> com.example.lightweaver.mobile.domain.device.DeviceType.STRIP
-                    DeviceType.TRIPANEL -> com.example.lightweaver.mobile.domain.device.DeviceType.TRIPANEL
-                }
                 when (config) {
-                    is com.example.lightweaver.mobile.persistence.entities.DeviceConfiguration.HttpDeviceConfiguration ->
-                        DeviceSummary(
+                    is DeviceConfigurationEntity.HttpDeviceConfiguration -> DeviceView(
                             config.uid,
                             config.name,
                             config.description,
-                            HttpConnectionConfiguration(
-                                config.connectionInfo.address,
-                                config.connectionInfo.port,
-                                config.connectionInfo.local,
-                                config.connectionInfo.discoverable
-                            ),
-                            type
+                            false,
+                            ConnectionType.HTTP,
+                            config.deviceType
                         )
                 }
             }
