@@ -57,7 +57,7 @@ class CreateDeviceViewModel(application: Application) : AndroidViewModel(applica
         connectionType.value = connectionTypeList[0]
         port.value = "80"
         discoverableDevice.value = true
-        localDevice.value = true
+        localDevice.value = false
 
         deviceName.observeForever { name ->
             mutableDeviceNameError.value = when {
@@ -94,7 +94,7 @@ class CreateDeviceViewModel(application: Application) : AndroidViewModel(applica
         val ipAddress = ipAddress.value
         val port = port.value?.toIntOrNull()
 
-        if (deviceName.isNullOrEmpty() || deviceName?.length > 64) return false
+        if (deviceName.isNullOrEmpty() || deviceName.length > 64) return false
         if (!deviceTypeList.contains(deviceType)) return false
         if (!connectionTypeList.contains(connectionType)) return false
         if (ipAddress == null || !ipAddressRegex.matches(ipAddress)) return false

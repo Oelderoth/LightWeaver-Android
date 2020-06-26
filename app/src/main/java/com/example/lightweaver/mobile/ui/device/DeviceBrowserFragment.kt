@@ -5,7 +5,7 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,8 +22,7 @@ class DeviceBrowserFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        viewModel =
-                ViewModelProviders.of(this).get(DeviceBrowserViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(DeviceBrowserViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_device_browser, container, false)
 
         val recyclerView = root.findViewById<RecyclerView>(R.id.device_browser_view)

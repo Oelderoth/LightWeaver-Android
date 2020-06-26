@@ -15,7 +15,6 @@ enum class DeviceType(val drawable: Int) {
                 is DeviceTypeConfiguration.BasicDeviceConfiguration -> BASIC
                 is DeviceTypeConfiguration.LightStripDeviceConfiguration -> LIGHT_STRIP
                 is DeviceTypeConfiguration.TriPanelDeviceConfiguration -> TRI_PANEL
-                else -> UNKNOWN
             }
         }
     }

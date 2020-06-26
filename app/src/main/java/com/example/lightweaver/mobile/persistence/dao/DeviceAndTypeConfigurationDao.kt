@@ -52,21 +52,19 @@ abstract class DeviceAndTypeConfigurationDao {
 
         when (device) {
             is DeviceConfigurationEntity.HttpDeviceConfiguration -> insertHttpDevice(device)
-            else -> throw RuntimeException("Unknown Device Configuration: ${device::class.simpleName}")
         }
 
         when (type) {
             is DeviceTypeConfigurationEntity.BasicDeviceConfiguration -> insertBasicDeviceConfiguration(type)
             is DeviceTypeConfigurationEntity.LightStripDeviceConfiguration -> insertLightStripDeviceConfiguration(type)
             is DeviceTypeConfigurationEntity.TriPanelDeviceConfiguration -> insertTriPanelDeviceConfiguration(type)
-            else -> throw RuntimeException("Unknown Type Configuration: ${type::class.simpleName}")
         }
     }
 
     @Transaction
     open suspend fun getDevice(deviceUid: String): DeviceAndTypeConfigurationEntity? {
-        val device = getHttpDevice(deviceUid)
-        return device?.let {device ->
+        val httpDevice = getHttpDevice(deviceUid)
+        return httpDevice?.let {device ->
             when(device.deviceType) {
                 DeviceType.BASIC -> getBasicDeviceConfiguration(deviceUid)
                 DeviceType.LIGHT_STRIP -> getLightStripDeviceConfiguration(deviceUid)

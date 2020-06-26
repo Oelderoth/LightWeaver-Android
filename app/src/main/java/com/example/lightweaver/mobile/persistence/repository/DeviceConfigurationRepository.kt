@@ -26,7 +26,6 @@ class DeviceConfigurationRepository(
             is DeviceTypeConfiguration.BasicDeviceConfiguration -> DeviceTypeConfigurationEntity.BasicDeviceConfiguration(device.uid)
             is DeviceTypeConfiguration.LightStripDeviceConfiguration -> DeviceTypeConfigurationEntity.LightStripDeviceConfiguration(device.uid)
             is DeviceTypeConfiguration.TriPanelDeviceConfiguration -> DeviceTypeConfigurationEntity.TriPanelDeviceConfiguration(device.uid)
-            else -> throw RuntimeException("Unknown TypeConfiguration: ${device.configuration::class.simpleName}")
         }
 
         val deviceType = DeviceType.fromConfiguration(device.configuration)
@@ -48,7 +47,6 @@ class DeviceConfigurationRepository(
                     httpConfig
                 )
             }
-            else -> throw RuntimeException("Unknown ConnectionConfiguration: ${device.connection::class.simpleName}")
         }
 
         deviceAndTypeConfigurationDao.insertDeviceAndTypeConfiguration(DeviceAndTypeConfigurationEntity(deviceConfig, typeConfig))
@@ -64,7 +62,6 @@ class DeviceConfigurationRepository(
                     DeviceTypeConfiguration.LightStripDeviceConfiguration()
                 is DeviceTypeConfigurationEntity.TriPanelDeviceConfiguration ->
                     DeviceTypeConfiguration.LightStripDeviceConfiguration()
-                else -> throw RuntimeException("Unknown DeviceTypeConfiguration: ${it.typeConfiguration::class.simpleName}")
             }
 
             val connectionConfiguration = when (it.deviceConfiguration) {
@@ -75,7 +72,6 @@ class DeviceConfigurationRepository(
                         .build().toString())
                     ConnectionConfiguration.HttpConfiguration(url, it.deviceConfiguration.connectionInfo.localNetwork, it.deviceConfiguration.connectionInfo.discoverable)
                 }
-                else -> throw RuntimeException("Unknown DeviceConfiguration: ${it.deviceConfiguration::class.simpleName}")
             }
 
             DeviceConfiguration(it.deviceConfiguration.uid, it.deviceConfiguration.name, it.deviceConfiguration.description, connectionConfiguration, typeConfiguration)

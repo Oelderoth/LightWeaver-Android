@@ -21,9 +21,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/create_device_content_layout"
@@ -35,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:contentDescription="Device Name Icon"
+                    android:contentDescription="@string/device_name_icon"
                     android:tint="?attr/colorControlNormal"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/device_name_layout"
@@ -48,7 +46,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="Device Name"
+                    android:hint="@string/device_name"
                     app:counterEnabled="true"
                     app:counterMaxLength="64"
                     app:errorEnabled="true"
@@ -80,7 +78,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/device_type_layout"
                     app:srcCompat="@{viewModel.deviceTypeIcon, default=@drawable/ic_device_led}"
-                    android:contentDescription="Device Type Icon"/>
+                    android:contentDescription="@string/device_type_icon"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/device_type_layout"
@@ -90,7 +88,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="Device Type"
+                    android:hint="@string/device_type"
                     app:counterEnabled="false"
                     app:counterMaxLength="64"
                     app:errorEnabled="false"
@@ -124,7 +122,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/device_connection_layout"
                     app:srcCompat="@{viewModel.connectionTypeIcon, default=@drawable/ic_wifi_black_24}"
-                    android:contentDescription="Device Connection Icon"/>
+                    android:contentDescription="@string/device_connection_icon"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/device_connection_layout"
@@ -134,7 +132,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="Connection Method"
+                    android:hint="@string/device_connection_method"
                     app:counterEnabled="false"
                     app:counterMaxLength="64"
                     app:errorEnabled="false"
@@ -164,7 +162,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:hint="IP Address"
+                    android:hint="@string/ip_address"
                     app:errorEnabled="true"
                     app:hintAnimationEnabled="true"
                     app:hintEnabled="true"
@@ -192,7 +190,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:hint="Port"
+                    android:hint="@string/port"
                     app:errorEnabled="true"
                     app:hintAnimationEnabled="true"
                     app:hintEnabled="true"
@@ -222,7 +220,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:drawableEnd="@{viewModel.advancedSettingsIcon}"
-                    android:text="Advanced Settings"
+                    android:text="@string/advanced_settings"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/device_ipaddress_layout"
                     app:layout_constraintTop_toBottomOf="@+id/device_ipaddress_layout"
@@ -234,7 +232,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:checked="@={viewModel.discoverableDevice}"
-                    android:text="Discoverable"
+                    android:text="@string/device_discoverable"
                     app:layout_constraintEnd_toEndOf="@+id/device_port_layout"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="@+id/device_local_check"
@@ -246,7 +244,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:text="If the IP Address of a device is not static, the system will automatically attempt to reconnect to discoverable devices  in the event their IP Address changes"
+                    android:text="@string/device_discoverable_hint"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="@+id/device_discoverable_check"
                     app:layout_constraintStart_toStartOf="@+id/device_discoverable_check"
@@ -259,7 +257,8 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:checked="@={viewModel.localDevice}"
-                    android:text="Local Device"
+                    android:enabled="false"
+                    android:text="@string/device_local"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/advanced_settings_text"
                     app:layout_constraintTop_toBottomOf="@+id/advanced_settings_text" />
@@ -271,7 +270,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="16dp"
-                    android:text="The system will not attempt to connect or re-discover Local Devices unless you are connected to the current network"
+                    android:text="@string/device_local_hint"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/device_local_check"
@@ -303,7 +302,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
-            android:text="Create"
+            android:text="@string/create"
             app:icon="@drawable/ic_add_white_24"
             app:iconSize="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -316,8 +315,8 @@
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:gravity="left|center_vertical"
-            android:text="Unable to connect to device.\nIs your connection information correct?"
+            android:gravity="start|center_vertical"
+            android:text="@string/create_device_connection_error"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/create_device_button"
             app:layout_constraintEnd_toStartOf="@+id/create_device_button"
@@ -334,7 +333,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/error_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/create_device_button"
-            app:srcCompat="@drawable/ic_error_white_24" />
+            app:srcCompat="@drawable/ic_error_white_24"
+            android:contentDescription="@string/device_connection_error" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/connection_error"
