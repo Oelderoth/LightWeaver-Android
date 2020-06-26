@@ -2,12 +2,15 @@ package com.example.lightweaver.mobile.ui.device
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.net.NetworkInfo
 import android.net.Uri
 import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,13 +24,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation.findNavController
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.example.lightweaver.mobile.R
 import com.example.lightweaver.mobile.databinding.FragmentCreateDeviceBinding
 import com.example.lightweaver.mobile.domain.device.DeviceConfiguration
 import com.example.lightweaver.mobile.domain.device.configuration.ConnectionConfiguration
 import com.example.lightweaver.mobile.domain.device.configuration.DeviceTypeConfiguration
+import com.example.lightweaver.mobile.persistence.LightWeaverDatabase
+import com.oelderoth.lightweaver.http.devices.HttpDevice
 import kotlinx.android.synthetic.main.fragment_create_device.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.Exception
 import java.net.URL
 import kotlin.random.Random
 
@@ -83,31 +93,55 @@ class CreateDeviceFragment : Fragment() {
         viewModel.portError.observe(viewLifecycleOwner, Observer { error -> root.device_port_layout.error = error})
         viewModel.isValid.observe(viewLifecycleOwner, Observer { valid -> root.create_device_button.isEnabled = valid })
 
-        root.create_device_button.setOnClickListener {
-            val connectionConfig = when(viewModel.connectionType.value) {
-                "HTTP" -> {
-                    val url = URL(Uri.Builder()
-                            .scheme("http")
-                            .encodedAuthority("${viewModel.ipAddress.value!!}:${viewModel.port.value!!.toInt()}")
-                            .build().toString())
-                    val localNetwork = if (viewModel.localDevice.value!!) getNetworkSSID(requireContext()) else null
-                    ConnectionConfiguration.HttpConfiguration(url, localNetwork, viewModel.discoverableDevice.value!!)
-                }
-                else -> throw RuntimeException("Unknown Connection Config")
-            }
-            val typeConfig = when(viewModel.deviceType.value) {
-                "Basic Light" -> DeviceTypeConfiguration.BasicDeviceConfiguration()
-                "Light Strip" -> DeviceTypeConfiguration.LightStripDeviceConfiguration()
-                "TriPanel" -> DeviceTypeConfiguration.TriPanelDeviceConfiguration()
-                else -> throw RuntimeException("Unknown Type Config")
+        val progressDrawable = CircularProgressDrawable(requireContext()).apply {
+            // let's use large style just to better see one issue
+            setStyle(CircularProgressDrawable.DEFAULT)
+            setColorSchemeColors(Color.WHITE)
+
+            callback = object: Drawable.Callback {
+                override fun scheduleDrawable(p0: Drawable, p1: Runnable, p2: Long) = Unit
+                override fun unscheduleDrawable(p0: Drawable, p1: Runnable) = Unit
+                override fun invalidateDrawable(drawable: Drawable) = root.create_device_button.invalidate()
             }
 
-            // TODO: Verify device is connectible, and retrieve the UID
-            val randomUID = Random.nextBytes(4).joinToString("") { "%02x".format(it) }
-            val deviceConfiguration = DeviceConfiguration(randomUID, viewModel.deviceName.value!!, null, connectionConfig, typeConfig)
+            start()
+        }
+
+        root.create_device_button.setOnClickListener {
+            root.create_device_button.isClickable = false
+            root.create_device_button.icon = progressDrawable
+            root.create_device_button.text = "Connecting"
+            root.connection_error.visibility = View.GONE
 
             viewModel.viewModelScope.launch {
+                val connectionConfig = buildConnectionConfiguration(viewModel)
+                val typeConfig = buildTypeConfiguration(viewModel)
+
+                val deviceUid = withContext(Dispatchers.IO) {
+                      tryGetDeviceUid(connectionConfig)
+                }
+
+                val existingDevice = withContext(Dispatchers.IO) {
+                    deviceUid?.let { LightWeaverDatabase.getInstance(requireContext()).deviceConfigurationRepository().get(deviceUid) }
+                }
+
+                if (deviceUid.isNullOrEmpty() || existingDevice != null) {
+                    root.create_device_button.isClickable = true
+                    root.create_device_button.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_white_24)
+                    root.create_device_button.text = "Create"
+                    root.error_text.text = when {
+                        deviceUid.isNullOrEmpty() -> "Unable to connect to device.\nIs your connection information correct?"
+                        existingDevice != null -> "This device is already registered with the nickname \"${existingDevice.name}\""
+                        else -> "An Error Occurred"
+                    }
+                    root.connection_error.visibility = View.VISIBLE
+                    return@launch
+                }
+
+                val deviceConfiguration = DeviceConfiguration(deviceUid, viewModel.deviceName.value!!, null, connectionConfig, typeConfig)
+
                 viewModel.insertDevice(deviceConfiguration)
+
                 findNavController(requireView()).popBackStack(R.id.nav_devices, false)
             }
         }
@@ -127,5 +161,42 @@ class CreateDeviceFragment : Fragment() {
                 }
         }
         return null
+    }
+
+    private fun buildConnectionConfiguration(viewModel: CreateDeviceViewModel): ConnectionConfiguration {
+        return when(viewModel.connectionType.value) {
+            "HTTP" -> {
+                val url = URL(Uri.Builder()
+                    .scheme("http")
+                    .encodedAuthority("${viewModel.ipAddress.value!!}:${viewModel.port.value!!.toInt()}")
+                    .build().toString())
+                val localNetwork = if (viewModel.localDevice.value!!) getNetworkSSID(requireContext()) else null
+                ConnectionConfiguration.HttpConfiguration(url, localNetwork, viewModel.discoverableDevice.value!!)
+            }
+            else -> throw RuntimeException("Unknown Connection Config")
+        }
+    }
+
+    private fun buildTypeConfiguration(viewModel: CreateDeviceViewModel): DeviceTypeConfiguration {
+        return when(viewModel.deviceType.value) {
+            "Basic Light" -> DeviceTypeConfiguration.BasicDeviceConfiguration()
+            "Light Strip" -> DeviceTypeConfiguration.LightStripDeviceConfiguration()
+            "TriPanel" -> DeviceTypeConfiguration.TriPanelDeviceConfiguration()
+            else -> throw RuntimeException("Unknown Type Config")
+        }
+    }
+
+    private fun tryGetDeviceUid(connectionConfiguration: ConnectionConfiguration): String? {
+        val device = when (connectionConfiguration) {
+            is ConnectionConfiguration.HttpConfiguration -> HttpDevice(connectionConfiguration.url)
+        }
+
+        return try {
+            val descriptor = device.GetDeviceDescriptor()
+            descriptor.uid
+        } catch (e: Exception) {
+            Log.w("LW", "Failed to retrieve device descriptor: $e", e)
+            null;
+        }
     }
 }

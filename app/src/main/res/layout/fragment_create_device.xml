@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
             name="viewModel"
             type="com.example.lightweaver.mobile.ui.device.CreateDeviceViewModel" />
     </data>
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -214,6 +214,7 @@
 
                 <TextView
                     android:id="@+id/advanced_settings_text"
+                    android:focusable="false"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
@@ -241,6 +242,7 @@
 
                 <TextView
                     android:id="@+id/device_discoverable_helper_text"
+                    android:focusable="false"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
@@ -264,6 +266,7 @@
 
                 <TextView
                     android:id="@+id/device_local_helper_text"
+                    android:focusable="false"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
@@ -286,12 +289,14 @@
 
         <View
             android:id="@+id/divider"
+            android:focusable="false"
             style="@style/Divider"
             app:layout_constraintBottom_toBottomOf="@+id/create_device_scroll_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.Icon"
             android:id="@+id/create_device_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -300,9 +305,43 @@
             android:layout_marginBottom="8dp"
             android:text="Create"
             app:icon="@drawable/ic_add_white_24"
-            app:iconPadding="8dp"
+            app:iconSize="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/create_device_scroll_layout" />
+
+        <TextView
+            android:id="@+id/error_text"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="left|center_vertical"
+            android:text="Unable to connect to device.\nIs your connection information correct?"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/create_device_button"
+            app:layout_constraintEnd_toStartOf="@+id/create_device_button"
+            app:layout_constraintStart_toEndOf="@+id/connection_error_icon"
+            app:layout_constraintTop_toTopOf="@+id/create_device_button"
+            app:layout_constraintVertical_bias="0.555" />
+
+        <ImageView
+            android:id="@+id/connection_error_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:tint="@color/deviceError"
+            app:layout_constraintBottom_toBottomOf="@+id/error_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/create_device_button"
+            app:srcCompat="@drawable/ic_error_white_24" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/connection_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:constraint_referenced_ids="connection_error_icon, error_text"
+            android:visibility="gone"
+            tools:visibility="visible"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
