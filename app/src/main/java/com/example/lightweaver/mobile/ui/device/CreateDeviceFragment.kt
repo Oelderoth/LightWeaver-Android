@@ -10,18 +10,16 @@ import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
-import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation.findNavController
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
@@ -34,12 +32,9 @@ import com.example.lightweaver.mobile.persistence.LightWeaverDatabase
 import com.oelderoth.lightweaver.http.devices.HttpDevice
 import kotlinx.android.synthetic.main.fragment_create_device.view.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import java.net.URL
-import kotlin.random.Random
 
 
 class CreateDeviceFragment : Fragment() {
@@ -55,7 +50,7 @@ class CreateDeviceFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProviders.of(this).get(CreateDeviceViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(CreateDeviceViewModel::class.java)
 
         val binding = DataBindingUtil.inflate<FragmentCreateDeviceBinding>(inflater, R.layout.fragment_create_device, container, false)
         binding.lifecycleOwner = this
@@ -110,7 +105,7 @@ class CreateDeviceFragment : Fragment() {
         root.create_device_button.setOnClickListener {
             root.create_device_button.isClickable = false
             root.create_device_button.icon = progressDrawable
-            root.create_device_button.text = "Connecting"
+            root.create_device_button.text = getString(R.string.connecting)
             root.connection_error.visibility = View.GONE
 
             viewModel.viewModelScope.launch {
@@ -128,11 +123,11 @@ class CreateDeviceFragment : Fragment() {
                 if (deviceUid.isNullOrEmpty() || existingDevice != null) {
                     root.create_device_button.isClickable = true
                     root.create_device_button.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_white_24)
-                    root.create_device_button.text = "Create"
+                    root.create_device_button.text = getString(R.string.create)
                     root.error_text.text = when {
-                        deviceUid.isNullOrEmpty() -> "Unable to connect to device.\nIs your connection information correct?"
-                        existingDevice != null -> "This device is already registered with the nickname \"${existingDevice.name}\""
-                        else -> "An Error Occurred"
+                        deviceUid.isNullOrEmpty() -> getString(R.string.create_device_connection_error)
+                        existingDevice != null -> getString(R.string.create_device_already_exists_error).format(existingDevice.name)
+                        else -> getString(R.string.create_device_generic_error)
                     }
                     root.connection_error.visibility = View.VISIBLE
                     return@launch
@@ -149,17 +144,16 @@ class CreateDeviceFragment : Fragment() {
         return root
     }
 
-    private fun getNetworkSSID(context: Context): String? {
-        val manager = context.getSystemService(WifiManager::class.java)
-        if (manager.isWifiEnabled) {
-                val wifiInfo = manager.connectionInfo
-                if (wifiInfo != null) {
-                    val state = WifiInfo.getDetailedStateOf(wifiInfo.supplicantState);
-                    if (state == NetworkInfo.DetailedState.CONNECTED || state == NetworkInfo.DetailedState.OBTAINING_IPADDR) {
-                        return wifiInfo.ssid;
-                    }
-                }
-        }
+    private fun getNetworkSSID(): String? {
+        //TODO: Broken, need permission management and dangerous ACCESS_FINE_LOCATION permission to get SSID
+        //val manager = context.getSystemService(WifiManager::class.java)
+        //if (manager.isWifiEnabled) {
+        //        val wifiInfo = manager.connectionInfo
+        //        if (wifiInfo != null && wifiInfo.networkId != -1) {
+        //            Log.i("LW", "Connected to: ${wifiInfo.ssid}")
+        //            return wifiInfo.ssid;
+        //        }
+        //}
         return null
     }
 
@@ -170,7 +164,7 @@ class CreateDeviceFragment : Fragment() {
                     .scheme("http")
                     .encodedAuthority("${viewModel.ipAddress.value!!}:${viewModel.port.value!!.toInt()}")
                     .build().toString())
-                val localNetwork = if (viewModel.localDevice.value!!) getNetworkSSID(requireContext()) else null
+                val localNetwork = if (viewModel.localDevice.value!!) getNetworkSSID() else null
                 ConnectionConfiguration.HttpConfiguration(url, localNetwork, viewModel.discoverableDevice.value!!)
             }
             else -> throw RuntimeException("Unknown Connection Config")

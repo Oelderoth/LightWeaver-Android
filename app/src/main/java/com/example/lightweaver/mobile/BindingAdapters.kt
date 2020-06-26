@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 
-@BindingAdapter("app:srcCompat")
+@BindingAdapter("srcCompat")
 fun setImg(view: ImageView, resId: Int) {
     view.setImageDrawable(ContextCompat.getDrawable(view.context, resId))
 }

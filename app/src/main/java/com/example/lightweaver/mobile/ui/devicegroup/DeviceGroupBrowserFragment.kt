@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.example.lightweaver.mobile.R
 
 class DeviceGroupBrowserFragment : Fragment() {
@@ -19,8 +19,7 @@ class DeviceGroupBrowserFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        deviceGroupBrowserViewModel =
-                ViewModelProviders.of(this).get(DeviceGroupBrowserViewModel::class.java)
+        deviceGroupBrowserViewModel = ViewModelProvider(this).get(DeviceGroupBrowserViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_device_group_browser, container, false)
         val textView: TextView = root.findViewById(R.id.text_device_group_browser)
         deviceGroupBrowserViewModel.text.observe(viewLifecycleOwner, Observer {
